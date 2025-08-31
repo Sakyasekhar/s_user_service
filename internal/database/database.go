@@ -22,10 +22,13 @@ func InitDB(cfg *config.Config) (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	// Auto migrate models
+	// Auto migrate models (skipping conversation tables due to UUID conflicts)
 	if err := db.AutoMigrate(&models.User{}); err != nil {
 		return nil, fmt.Errorf("failed to migrate database: %w", err)
 	}
+
+	// Note: Conversation and Message tables should already exist in Supabase
+	// with proper UUID types. If not, create them manually in Supabase SQL editor.
 
 	return db, nil
 }

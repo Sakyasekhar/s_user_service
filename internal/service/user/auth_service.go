@@ -4,7 +4,7 @@ import (
 	"errors"
 	"os"
 	"time"
-	"user_service/internal/dto/user"
+	dto "user_service/internal/dto/user"
 	"user_service/internal/models"
 	"user_service/internal/repository"
 
@@ -61,13 +61,13 @@ func (s *AuthService) Register(req *dto.RegisterRequest) (*dto.AuthResponse, err
 
 	// Convert to response
 	userResponse := &dto.UserResponse{
-		ID:        user.ID,
+		UserID:    user.UserID,
 		Email:     user.Email,
 		Username:  user.Username,
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
+		CreatedAt: int64(user.CreatedAt.Unix()),
+		UpdatedAt: int64(user.UpdatedAt.Unix()),
 	}
 
 	return &dto.AuthResponse{
@@ -97,13 +97,13 @@ func (s *AuthService) Login(req *dto.LoginRequest) (*dto.AuthResponse, error) {
 
 	// Convert to response
 	userResponse := &dto.UserResponse{
-		ID:        user.ID,
+		UserID:    user.UserID,
 		Email:     user.Email,
 		Username:  user.Username,
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
+		CreatedAt: int64(user.CreatedAt.Unix()),
+		UpdatedAt: int64(user.UpdatedAt.Unix()),
 	}
 
 	return &dto.AuthResponse{
@@ -129,16 +129,16 @@ func (s *AuthService) generateJWT(user *models.User) (string, error) {
 	// Parse expiry duration
 	expiryDuration, err := time.ParseDuration(jwtExpiry)
 	if err != nil {
-		expiryDuration = 24 * time.Hour // fallback to 24h
+		expiryDuration = 24 * time.Hour
 	}
 
 	// Create claims
 	claims := &dto.Claims{
-		UserID:   user.ID,
+		UserID:   user.UserID,
 		Email:    user.Email,
 		Username: user.Username,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expiryDuration)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(30 * expiryDuration)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
 			Issuer:    "user_service",

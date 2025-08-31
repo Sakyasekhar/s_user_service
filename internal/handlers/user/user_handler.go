@@ -59,16 +59,6 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// GetUsers retrieves all users
-func (h *UserHandler) GetUsers(c *gin.Context) {
-	users, err := h.userService.GetAllUsers()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve users"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"users": users})
-}
 
 // UpdateUser updates a user by ID
 func (h *UserHandler) UpdateUser(c *gin.Context) {

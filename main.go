@@ -5,7 +5,7 @@ import (
 	"user_service/config"
 	"user_service/internal/database"
 	"user_service/internal/middleware"
-	"user_service/internal/routes"
+	userRoutes "user_service/internal/routes/user"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,7 +34,7 @@ func main() {
 	router.Use(middleware.CORS())
 
 	// Setup routes
-	routes.SetupRoutes(router, db)
+	userRoutes.SetupRoutes(router, db)
 
 	// Start server
 	log.Printf("Server starting on port %s", cfg.Port)

@@ -19,7 +19,7 @@ type UpdateUserRequest struct {
 
 // UserResponse represents the user data sent in responses
 type UserResponse struct {
-	ID        uint   `json:"id"`
+	UserID    uint   `json:"user_id"`
 	Email     string `json:"email"`
 	Username  string `json:"username"`
 	FirstName string `json:"first_name"`

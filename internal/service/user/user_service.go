@@ -2,7 +2,7 @@ package service
 
 import (
 	"errors"
-	"user_service/internal/dto/user"
+	dto "user_service/internal/dto/user"
 	"user_service/internal/models"
 	"user_service/internal/repository"
 
@@ -62,21 +62,6 @@ func (s *UserService) GetUser(id uint) (*dto.UserResponse, error) {
 	return s.toUserResponse(user), nil
 }
 
-// GetAllUsers retrieves all users
-func (s *UserService) GetAllUsers() ([]dto.UserResponse, error) {
-	users, err := s.userRepo.GetAll()
-	if err != nil {
-		return nil, err
-	}
-
-	var responses []dto.UserResponse
-	for _, user := range users {
-		responses = append(responses, *s.toUserResponse(&user))
-	}
-
-	return responses, nil
-}
-
 // UpdateUser updates a user with business logic validation
 func (s *UserService) UpdateUser(id uint, req *dto.UpdateUserRequest) (*dto.UserResponse, error) {
 	user, err := s.userRepo.GetByID(id)
@@ -128,12 +113,12 @@ func (s *UserService) DeleteUser(id uint) error {
 // toUserResponse converts a User model to UserResponse
 func (s *UserService) toUserResponse(user *models.User) *dto.UserResponse {
 	return &dto.UserResponse{
-		ID:        user.ID,
+		UserID:    user.UserID,
 		Email:     user.Email,
 		Username:  user.Username,
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
+		CreatedAt: int64(user.CreatedAt.Unix()),
+		UpdatedAt: int64(user.UpdatedAt.Unix()),
 	}
 }
