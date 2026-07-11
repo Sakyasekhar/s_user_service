@@ -21,7 +21,7 @@ jobs:
 
       - name: Build binary
         run: |
-          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -tags lambda.norpc -o bootstrap main.go
+          GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -tags lambda.norpc -o bootstrap main.go
 
       - name: Zip binary
         run: zip bootstrap.zip bootstrap
