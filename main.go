@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var ginLambda *ginadapter.GinLambda
+var ginLambda *ginadapter.GinLambdaV2
 
 func Handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 	return ginLambda.ProxyWithContextV2(ctx, req)
@@ -49,7 +49,7 @@ func main() {
 
 	// Start server
 	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") != "" {
-		ginLambda = ginadapter.New(router)
+		ginLambda = ginadapter.NewV2(router)
 		lambda.Start(Handler)
 	} else {
 		log.Printf("Server starting on port %s", cfg.Port)
