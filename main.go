@@ -1,14 +1,25 @@
 package main
 
 import (
+	"context"
 	"log"
+	"os"
 	"user_service/config"
 	"user_service/internal/database"
 	"user_service/internal/middleware"
 	userRoutes "user_service/internal/routes/user"
 
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
+	ginadapter "github.com/awslabs/aws-lambda-go-api-proxy/gin"
 	"github.com/gin-gonic/gin"
 )
+
+var ginLambda *ginadapter.GinLambda
+
+func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	return ginLambda.ProxyWithContext(ctx, req)
+}
 
 func main() {
 	// Load configuration
@@ -37,8 +48,13 @@ func main() {
 	userRoutes.SetupRoutes(router, db)
 
 	// Start server
-	log.Printf("Server starting on port %s", cfg.Port)
-	if err := router.Run(":" + cfg.Port); err != nil {
-		log.Fatal("Failed to start server:", err)
+	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") != "" {
+		ginLambda = ginadapter.New(router)
+		lambda.Start(Handler)
+	} else {
+		log.Printf("Server starting on port %s", cfg.Port)
+		if err := router.Run(":" + cfg.Port); err != nil {
+			log.Fatal("Failed to start server:", err)
+		}
 	}
 }
