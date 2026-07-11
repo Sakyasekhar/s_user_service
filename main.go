@@ -18,7 +18,7 @@ import (
 var ginLambda *ginadapter.GinLambdaV2
 
 func Handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
-	return ginLambda.ProxyWithContextV2(ctx, req)
+	return ginLambda.ProxyWithContext(ctx, req)
 }
 
 func main() {
